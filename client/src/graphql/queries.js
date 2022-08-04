@@ -1,8 +1,8 @@
 import { gql } from '@apollo/client'
 
 export const GET_REPOSITORIES = gql`
-    query getRepositories($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection, $searchKeyword: String) {
-        repositories(orderBy: $orderBy, orderDirection: $orderDirection, searchKeyword: $searchKeyword) {
+    query getRepositories($orderBy: AllRepositoriesOrderBy, $orderDirection: OrderDirection, $searchKeyword: String, $after: String, $first: Int) {
+        repositories(orderBy: $orderBy, orderDirection: $orderDirection, searchKeyword: $searchKeyword, after: $after, first: $first) {
             edges {
                 node {
                     id
@@ -15,22 +15,51 @@ export const GET_REPOSITORIES = gql`
                     description
                     ownerAvatarUrl
                 }
+                cursor
+            }
+            pageInfo {
+                endCursor
+                startCursor
+                hasNextPage
             }
         }
     }
 `
 
 export const GET_USER = gql`
-    query getUser {
+    query getUser($withReviews: Boolean = false, $first: Int, $after: String) {
         me {
             id
             username
+            reviews(first: $first, after: $after) @include(if: $withReviews) {
+                edges {
+                    node {
+                        id
+                        text
+                        rating
+                        createdAt
+                        repository {
+                            id
+                        }
+                        user {
+                            id
+                            username
+                        }
+                    }
+                    cursor
+                }
+                pageInfo {
+                    endCursor
+                    startCursor
+                    hasNextPage
+                }
+            }
         }
     }
 `
 
 export const GET_REPOSITORY = gql`
-    query repository($id: ID!) {
+    query getRepository($id: ID!) {
         repository(id: $id) {
             id
             fullName
@@ -49,11 +78,11 @@ export const GET_REPOSITORY = gql`
 `
 
 export const GET_REVIEWS = gql`
-    query getReviews($id: ID!) {
+    query getReviews($id: ID!, $after: String, $first: Int) {
         repository(id: $id) {
             id
             fullName
-            reviews {
+            reviews(first: $first, after: $after) {
                 edges {
                     node {
                         id
@@ -65,6 +94,12 @@ export const GET_REVIEWS = gql`
                             username
                         }
                     }
+                    cursor
+                }
+                pageInfo {
+                    endCursor
+                    startCursor
+                    hasNextPage
                 }
             }
         }

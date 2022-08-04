@@ -36,7 +36,8 @@ const AppBar = () => {
                 {user ? (
                     <>
                         <AppBarTab onPress={() => navigate('/')}>Repositories</AppBarTab>
-                        <AppBarTab onPress={() => navigate('/reviews')}>Create a review</AppBarTab>
+                        <AppBarTab onPress={() => navigate('/add-review')}>Create a review</AppBarTab>
+                        <AppBarTab onPress={() => navigate('/my-reviews')}>My Reviews</AppBarTab>
                         <AppBarTab onPress={onSignOut}>Sign Out</AppBarTab>
                     </>
                 ) : (<>

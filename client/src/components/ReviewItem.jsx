@@ -1,6 +1,7 @@
-import { View, Text, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, StyleSheet, Pressable, Alert } from 'react-native'
 import theme from '../theme'
+import { useNavigate } from 'react-router-native'
+import useDeleteReview from '../hooks/useDeleteReview'
 
 const styles = StyleSheet.create({
     card: {
@@ -38,13 +39,52 @@ const styles = StyleSheet.create({
         color: theme.colors.primary,
         fontWeight: 'bold',
         fontFamily: theme.fonts.main
+    },
+    ctas: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        padding: 10,
+    },
+    view: {
+        backgroundColor: theme.colors.primary,
+        width: '45%',
+        padding: 10,
+        borderRadius: 5,
+    },
+    delete: {
+        backgroundColor: theme.colors.error,
+        width: '45%',
+        padding: 10,
+        borderRadius: 5,
+    },
+    buttonText: {
+        color: 'white',
+        textAlign: 'center',
+        fontWeight: 'bold',
+        fontFamily: theme.fonts.main
     }
 })
 
-const ReviewItem = ({review}) => {
+const ReviewItem = ({review, isOwn}) => {
+    const navigate = useNavigate()
+    const [deleteReview] = useDeleteReview()
+
     const formatDate = (date) => {
         const d = new Date(date)
         return d.toLocaleDateString()
+    }
+
+    const handleDelete = () => {
+        Alert.alert("Delete Review", "Are you sure you want to delete this review?", [
+            {text: "Cancel", style: "cancel"},
+            {text: "Delete", onPress: () => {
+                deleteReview(review.id)
+            }}
+        ])
+    }
+
+    const handleView = () => {
+        navigate(`/${review.repository.id}`)
     }
 
     return (
@@ -59,6 +99,14 @@ const ReviewItem = ({review}) => {
                     <Text>{review.text}</Text>
                 </View>
             </View>
+            {isOwn && <View style={styles.ctas}>
+                <Pressable onPress={handleView} style={styles.view}>
+                    <Text style={styles.buttonText}>View repository</Text>
+                </Pressable>
+                <Pressable onPress={handleDelete} style={styles.delete}>
+                    <Text style={styles.buttonText}>Delete Review</Text>
+                </Pressable>
+            </View>}
         </View>
     )
 }

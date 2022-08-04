@@ -16,7 +16,7 @@ const ItemSeparator = () => <View style={styles.separator} />
 const RepositoryView = () => {
     const { id } = useParams()
     const { repository } = useRepository(id)
-    const { reviews } = useReviews(id)
+    const { reviews, fetchMore } = useReviews(id)
 
     if (!repository) {
         return null
@@ -27,12 +27,15 @@ const RepositoryView = () => {
         reviewsList = reviews.edges.map(edge => edge.node)
     }
 
+    const onEndReach = () => fetchMore()
+
     return (
         <FlatList
             data={reviewsList}
             renderItem={({ item }) => <ReviewItem review={item} />}
             keyExtractor={({ id }) => id}
             ItemSeparatorComponent={ItemSeparator}
+            onEndReached={onEndReach}
             ListHeaderComponent={() => <>
                 <RepositoryItem repository={repository} singleView />
                 <ItemSeparator/>

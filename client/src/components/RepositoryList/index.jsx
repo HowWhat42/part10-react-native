@@ -26,7 +26,7 @@ const Dropdown = ({sortBy, setSortBy}) => {
 
 const ItemSeparator = () => <View style={styles.separator} />
 
-export const RepositoryListContainer = ({ repositories, searchKeyword, setSearchKeyword, sortBy, setSortBy }) => {
+export const RepositoryListContainer = ({ repositories, onEndReach, searchKeyword, setSearchKeyword, sortBy, setSortBy }) => {
     const repositoryNodes = repositories ? repositories.edges.map(edge => edge.node) : []
 
     return (
@@ -34,6 +34,8 @@ export const RepositoryListContainer = ({ repositories, searchKeyword, setSearch
             data={repositoryNodes}
             ItemSeparatorComponent={ItemSeparator}
             renderItem={({ item }) => <RepositoryItem repository={item} />}
+            onEndReached={onEndReach}
+            onEndReachedThreshold={0.5}
             ListHeaderComponent={<>
                 <Searchbar
                     placeholder="Search"
@@ -50,10 +52,13 @@ const RepositoryList = () => {
     const [sortBy, setSortBy] = useState()
     const [searchKeyword, setSearchKeyword] = useState('')
     
-    const { repositories } = useRepositories(sortBy, searchKeyword)
+    const { repositories, fetchMore } = useRepositories(sortBy, { searchKeyword, first: 8 })
+
+    const onEndReach = () => fetchMore()
 
     return <RepositoryListContainer 
-            repositories={repositories} 
+            repositories={repositories}
+            onEndReach={onEndReach}
             searchKeyword={searchKeyword} 
             setSearchKeyword={setSearchKeyword} 
             sortBy={sortBy} 
