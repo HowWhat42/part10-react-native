@@ -24,7 +24,7 @@ const RepositoryInfo = ({ data, text }) => {
     }
 
     return (
-        <View>
+        <View testID="repositoryInfo">
             <Text style={styles.textPrimary}>{shortNumber(data)}</Text>
             <Text style={styles.textSecondary}>{text}</Text>
         </View>

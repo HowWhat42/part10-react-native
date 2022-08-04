@@ -36,9 +36,13 @@ const AppBar = () => {
                 {user ? (
                     <>
                         <AppBarTab onPress={() => navigate('/')}>Repositories</AppBarTab>
+                        <AppBarTab onPress={() => navigate('/reviews')}>Create a review</AppBarTab>
                         <AppBarTab onPress={onSignOut}>Sign Out</AppBarTab>
                     </>
-                ) : (<AppBarTab onPress={() => navigate('/signin')}>Sign In</AppBarTab>)}
+                ) : (<>
+                    <AppBarTab onPress={() => navigate('/signin')}>Sign In</AppBarTab>
+                    <AppBarTab onPress={() => navigate('/signup')}>Sign Up</AppBarTab>
+                </>)}
             </ScrollView>
         </View>
     );

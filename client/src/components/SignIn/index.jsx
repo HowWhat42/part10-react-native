@@ -2,9 +2,9 @@ import { View, Text, Pressable, StyleSheet } from 'react-native'
 import React from 'react'
 import { Formik } from 'formik'
 import * as yup from 'yup';
-import FormikTextInput from './FormikTextInput'
-import theme from '../theme';
-import useSignIn from '../hooks/useSignIn';
+import FormikTextInput from '../FormikTextInput'
+import theme from '../../theme';
+import useSignIn from '../../hooks/useSignIn';
 import { useNavigate } from 'react-router-native';
 
 const initialValues = {
@@ -44,15 +44,19 @@ const styles = StyleSheet.create({
 })
 
 
-const Form = ({onSubmit}) => {
+export const Form = ({onSubmit}) => {
     return (
-        <View style={styles.form}>
-            <FormikTextInput style={styles.input} name="username" placeholder='Username' />
-            <FormikTextInput style={styles.input} secureTextEntry name="password" placeholder='Password' />
-            <Pressable style={styles.submit} onPress={onSubmit}>
-                <Text style={styles.submitText}>Sign in</Text>
-            </Pressable>
-        </View>
+        <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema} style={styles.form}>
+            {({ handleSubmit }) => (
+                <>
+                    <FormikTextInput style={styles.input} name="username" placeholder='Username' />
+                    <FormikTextInput style={styles.input} secureTextEntry name="password" placeholder='Password' />
+                    <Pressable style={styles.submit} onPress={handleSubmit}>
+                        <Text style={styles.submitText}>Sign in</Text>
+                    </Pressable>
+                </>
+            )}
+        </Formik>
     )
 }
 
@@ -73,9 +77,7 @@ const SignIn = () => {
 
     return (
         <View>
-            <Formik initialValues={initialValues} onSubmit={onSubmit} validationSchema={validationSchema}>
-                {({ handleSubmit }) => <Form onSubmit={handleSubmit} />}
-            </Formik>
+            <Form onSubmit={onSubmit} />
         </View>
     )
 }
